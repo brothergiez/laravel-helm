@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "fullname" . }}-phpfpm
+  labels:
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+spec:
+  type: {{ .Values.laravelService.type }}
+  ports:
+  - port: {{ .Values.laravelService.phpfpmPort }}
+    targetPort: {{ .Values.laravelService.phpfpmPort }}
+    protocol: TCP
+    name: {{ .Values.laravelService.name }}
+  selector:
+    app: {{ template "fullname" . }}-phpfpm

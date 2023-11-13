@@ -1,0 +1,80 @@
+# Default values for phpfpm-app.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+replicaCount: 1
+image:
+  repository: brtgz/experimental
+  tag: latest
+  pullPolicy: IfNotPresent
+nginxService:
+  name: nginx
+  type: NodePort
+  externalPort: 80
+  internalPort: 8080
+laravelService:
+  name: herapod
+  type: NodePort
+  phpfpmPort: 9000
+ingress:
+  enabled: false
+  # Used to create Ingress record (should used with service.type: ClusterIP).
+  hosts:
+    - chart-example.local
+  annotations:
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  tls:
+    # Secrets must be manually created in the namespace.
+    # - secretName: chart-example-tls
+    #   hosts:
+    #     - chart-example.local
+config:
+  nginx.conf: |-
+    user nginx;
+    worker_processes auto;
+
+    error_log /var/log/nginx/error.log warn;
+    pid /var/run/nginx.pid;
+
+    events {
+        worker_connections 1024;
+    }
+
+    http {
+        include /etc/nginx/mime.types;
+        default_type application/octet-stream;
+        sendfile on;
+        keepalive_timeout 65;
+        
+        server {
+            listen 80;
+            server_name localhost; # Replace with your domain or IP address
+
+            root /var/www/html/public; # Path to your Laravel public directory
+
+            index index.php index.html;
+
+            location / {
+                try_files $uri $uri/ /index.php?$query_string;
+            }
+
+            location ~ \.php$ {
+                fastcgi_pass hera-pod:9000; # Use the name of your Laravel app container and PHP-FPM port
+                fastcgi_index index.php;
+                include fastcgi_params;
+                fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+            }
+
+            location ~ /\.ht {
+                deny all;
+            }
+        }
+    }
+
+resources:
+  limits:
+    cpu: 100m
+    memory: 128Mi
+  requests:
+    cpu: 100m
+    memory: 128Mi
