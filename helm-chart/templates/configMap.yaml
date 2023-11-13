@@ -9,33 +9,26 @@ metadata:
     heritage: "{{ .Release.Service }}"
 data:
   nginx.conf: |-
-    http {
-        include /etc/nginx/mime.types;
-        default_type application/octet-stream;
-        sendfile on;
-        keepalive_timeout 65;
-        
-        server {
-            listen 80;
-            server_name localhost; # Replace with your domain or IP address
+    server {
+        listen 80;
+        server_name localhost; # Replace with your domain or IP address
 
-            root /var/www/html/public; # Path to your Laravel public directory
+        root /var/www/html/public; # Path to your Laravel public directory
 
-            index index.php index.html;
+        index index.php index.html;
 
-            location / {
-                try_files $uri $uri/ /index.php?$query_string;
-            }
+        location / {
+            try_files $uri $uri/ /index.php?$query_string;
+        }
 
-            location ~ \.php$ {
-                fastcgi_pass laravel-herapod-phpfpm:9000; # Use the name of your Laravel app container and PHP-FPM port
-                fastcgi_index index.php;
-                include fastcgi_params;
-                fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
-            }
+        location ~ \.php$ {
+            fastcgi_pass laravel-herapod-phpfpm:9000; # Use the name of your Laravel app container and PHP-FPM port
+            fastcgi_index index.php;
+            include fastcgi_params;
+            fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+        }
 
-            location ~ /\.ht {
-                deny all;
-            }
+        location ~ /\.ht {
+            deny all;
         }
     }
