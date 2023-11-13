@@ -22,6 +22,20 @@ spec:
         - containerPort: {{ .Values.laravelService.phpfpmPort }}
         resources:
 {{ toYaml .Values.resources | indent 12 }}
+        env:
+        - DB_CONNECTION: "pgsql"
+        - DB_HOST: "localhost"
+        - DB_PORT: "5432"
+        - DB_DATABASE: "postgres"
+        - DB_USERNAME: "admin"
+        - DB_PASSWORD: "password"
+        - APP_KEY: "base64:goa6gXPQXp620j2nz1kd95ix70OVutzXHHPJyQ09+24="
+        - APP_NAME: "Laravel"
+        - APP_ENV: "local"
+        - APP_DEBUG: true
+        - APP_URL: "http://localhost:8080"
+        - REDIS_HOST: "redis-master"
+        - REDIS_PORT: "6379"
         readinessProbe:
           tcpSocket:
             port: {{ .Values.laravelService.phpfpmPort }}
