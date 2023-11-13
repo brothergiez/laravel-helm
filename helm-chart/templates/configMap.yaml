@@ -38,7 +38,7 @@ data:
             }
 
             location ~ \.php$ {
-                fastcgi_pass hera-pod:9000; # Use the name of your Laravel app container and PHP-FPM port
+                fastcgi_pass laravel-herapod-phpfpm:9000; # Use the name of your Laravel app container and PHP-FPM port
                 fastcgi_index index.php;
                 include fastcgi_params;
                 fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
