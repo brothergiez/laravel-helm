@@ -30,10 +30,6 @@ ingress:
     #     - chart-example.local
 config:
   nginx.conf: |-
-    events {
-        worker_connections 1024;
-    }
-
     http {
         include /etc/nginx/mime.types;
         default_type application/octet-stream;
